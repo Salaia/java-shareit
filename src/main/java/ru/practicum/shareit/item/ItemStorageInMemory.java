@@ -62,7 +62,7 @@ public class ItemStorageInMemory implements ItemStorage {
     }
 
     public List<Item> search(String subString) {
-        if(subString.isBlank()) {
+        if (subString.isBlank()) {
             return new ArrayList<>();
         }
 
