@@ -61,14 +61,14 @@ public class ItemStorageInMemory implements ItemStorage {
         return result;
     }
 
-    public List<Item> search(String subString) {
-        if (subString.isBlank()) {
+    public List<Item> search(String text) {
+        if (text.isBlank()) {
             return new ArrayList<>();
         }
 
         return items.values().stream()
-                .filter(item -> (item.getDescription().toLowerCase().contains(subString.toLowerCase())
-                        || item.getName().toLowerCase().contains(subString.toLowerCase())) && item.getAvailable())
+                .filter(item -> (item.getDescription().toLowerCase().contains(text.toLowerCase())
+                        || item.getName().toLowerCase().contains(text.toLowerCase())) && item.getAvailable())
                 .collect(Collectors.toList());
     }
 

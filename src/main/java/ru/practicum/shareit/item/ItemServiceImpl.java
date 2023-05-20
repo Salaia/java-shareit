@@ -59,8 +59,8 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.itemDtoList(items);
     }
 
-    public List<ItemDto> search(String subString) {
-        List<Item> items = itemStorage.search(subString);
+    public List<ItemDto> search(String text) {
+        List<Item> items = itemStorage.search(text);
         return itemMapper.itemDtoList(items);
     }
 }

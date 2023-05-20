@@ -13,10 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemController {
+    private static final String HEADER_SHARER = "X-Sharer-User-Id";
     ItemServiceImpl itemService;
 
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+    public ItemDto create(@RequestHeader(HEADER_SHARER) Long ownerId,
                           @Validated(ItemDto.Create.class) @RequestBody ItemDto itemDto) {
         itemDto.setOwnerId(ownerId);
         return itemService.create(itemDto);
@@ -25,7 +26,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto update(@Validated(ItemDto.Update.class) @RequestBody ItemDto itemDto,
                           @PathVariable Long itemId,
-                          @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+                          @RequestHeader(HEADER_SHARER) Long ownerId) {
         itemDto.setId(itemId);
         itemDto.setOwnerId(ownerId);
         return itemService.update(itemDto);
@@ -37,12 +38,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> findAll(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public List<ItemDto> findAll(@RequestHeader(HEADER_SHARER) Long ownerId) {
         return itemService.findAll(ownerId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam("text") String subString) {
-        return itemService.search(subString);
+    public List<ItemDto> search(String text) {
+        return itemService.search(text);
     }
 }

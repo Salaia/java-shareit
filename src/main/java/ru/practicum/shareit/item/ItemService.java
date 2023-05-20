@@ -12,5 +12,5 @@ public interface ItemService {
 
     List<ItemDto> findAll(Long ownerId);
 
-    List<ItemDto> search(String subString);
+    List<ItemDto> search(String text);
 }
