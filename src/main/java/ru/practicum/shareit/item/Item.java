@@ -1,33 +1,43 @@
 package ru.practicum.shareit.item;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
-@Builder
+@Getter
+@Setter
+@ToString
+@Entity
+@Table(name = "items", schema = "shareit")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Item {
 
+    @Id
+    @Column(name = "item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @NotBlank
     String name;
     @NotBlank
     String description;
-    @NotNull
-    Boolean available;
-    Long ownerId; // Пользователь, который добавляет в приложение новую вещь, будет считаться ее владельцем.
-    // если вещь была создана по запросу другого пользователя, то в этом поле будет храниться ссылка на соответствующий запрос.
-    ItemRequest request; // необязательное поле - только для вещей по запросу
 
-    /*
-    Customer Reviews
-    после аренды можно оставить ревью. Это отдельный класс, но где он должен лежать?
-    Это, видимо, будет в последующих ТЗ
-     */
+    @NotNull
+    @Column(name = "is_available")
+    Boolean available;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    User owner;
+
+    @OneToOne
+    @Transient
+    ItemRequest request;
+
 }

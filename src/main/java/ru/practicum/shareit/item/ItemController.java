@@ -14,13 +14,12 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemController {
     private static final String HEADER_SHARER = "X-Sharer-User-Id";
-    ItemServiceImpl itemService;
+    ItemService itemService;
 
     @PostMapping
     public ItemDto create(@RequestHeader(HEADER_SHARER) Long ownerId,
                           @Validated(ItemDto.Create.class) @RequestBody ItemDto itemDto) {
-        itemDto.setOwnerId(ownerId);
-        return itemService.create(itemDto);
+        return itemService.create(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
@@ -28,22 +27,28 @@ public class ItemController {
                           @PathVariable Long itemId,
                           @RequestHeader(HEADER_SHARER) Long ownerId) {
         itemDto.setId(itemId);
-        itemDto.setOwnerId(ownerId);
-        return itemService.update(itemDto);
+        return itemService.update(itemDto, ownerId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItemById(@PathVariable Long itemId) {
-        return itemService.findItemById(itemId);
+    public ItemDtoWithBookingsAndComments findItemById(@PathVariable Long itemId,
+                                                       @RequestHeader(HEADER_SHARER) Long userId) {
+        return itemService.findItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemDto> findAll(@RequestHeader(HEADER_SHARER) Long ownerId) {
+    public List<ItemDtoWithBookingsAndComments> findAll(@RequestHeader(HEADER_SHARER) Long ownerId) {
         return itemService.findAll(ownerId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(String text) {
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoOutput createComment(@PathVariable Long itemId, @RequestHeader(HEADER_SHARER) Long bookerId,
+                                          @RequestBody CommentDtoInput commentDto) {
+        return itemService.createComment(itemId, bookerId, commentDto);
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class UserMapper {
 
-    public UserDto toUserDto(User user) {
+    public static UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -16,15 +16,15 @@ public class UserMapper {
                 .build();
     }
 
-    public User toUser(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
+    public static User toUser(UserDto userDto) {
+        User user = new User();
+        user.setId(userDto.getId());
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        return user;
     }
 
-    public List<UserDto> userDtoList(List<User> users) {
+    public static List<UserDto> userDtoList(List<User> users) {
         List<UserDto> dtos = new ArrayList<>();
         for (User user : users) {
             dtos.add(toUserDto(user));

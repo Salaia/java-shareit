@@ -15,23 +15,23 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping // POST /users
+    @PostMapping
     public UserDto create(@Valid @RequestBody UserDto userDto) {
         return userService.create(userDto);
     }
 
-    @PatchMapping("/{id}") // PATCH /users
+    @PatchMapping("/{id}")
     public UserDto update(@Valid @RequestBody UserDto userDto, @PathVariable("id") @Positive Long id) {
         userDto.setId(id);
         return userService.update(userDto);
     }
 
-    @GetMapping // GET /users
+    @GetMapping
     public List<UserDto> findAll() {
         return userService.findAll();
     }
 
-    @GetMapping("/{id}") // GET /users/{id}
+    @GetMapping("/{id}")
     public UserDto findUserById(@PathVariable("id") @Positive Long id) {
         return userService.findUserById(id);
     }

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.BookingDtoOutput;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
@@ -28,7 +29,9 @@ public class ItemDto {
 
     @NotNull(groups = {Create.class})
     Boolean available;
-    Long ownerId; // X-Sharer-User-Id показывает, от какого пользователя пришел запрос
     ItemRequest request;
+
+    BookingDtoOutput lastBooking;
+    BookingDtoOutput nextBooking;
 
 }

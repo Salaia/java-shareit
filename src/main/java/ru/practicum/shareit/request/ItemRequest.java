@@ -1,20 +1,27 @@
 package ru.practicum.shareit.request;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import ru.practicum.shareit.user.User;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/*
-На случай, если нужной вещи на сервисе нет, у пользователей должна быть возможность оставлять запросы.
- Вдруг древний граммофон, который странно даже предлагать к аренде,
- неожиданно понадобится для театральной постановки.
-По запросу можно будет добавлять новые вещи для шеринга.
- */
-@Data
+@Setter
+@Getter
+@Entity
+@Table(name = "requests", schema = "shareit")
 public class ItemRequest {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     User requester;
+
     LocalDateTime created;
 }

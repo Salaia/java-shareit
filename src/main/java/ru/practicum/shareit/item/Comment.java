@@ -1,30 +1,26 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.item;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "bookings", schema = "shareit")
-@NoArgsConstructor
+@Table(name = "comments", schema = "shareit")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Booking {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "start_date")
-    LocalDateTime start;
-
-    @Column(name = "end_date")
-    LocalDateTime end;
+    String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
@@ -32,17 +28,15 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    User booker;
+    User author;
 
-    @Enumerated(EnumType.STRING)
-    BookingStatus status;
+    Instant created = Instant.now();
 
     @Override
     public String toString() {
-        return "Booking{" +
+        return "Comment{" +
                 "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
+                ", text='" + text + '\'' +
                 '}';
     }
 }
