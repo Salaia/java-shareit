@@ -80,7 +80,6 @@ public class ItemServiceImpl implements ItemService {
         if (optionalItem.isEmpty()) {
             throw new EntityNotFoundException("Not found: item id " + itemId);
         }
-        ItemDtoWithBookingsAndComments result = new ItemDtoWithBookingsAndComments();
         Item item = optionalItem.get();
         Booking lastBooking = null;
         Booking nextBooking = null;
