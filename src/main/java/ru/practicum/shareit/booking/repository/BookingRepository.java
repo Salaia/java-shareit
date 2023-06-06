@@ -26,9 +26,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
-            " AND i.id = ?2" +
-            " AND b.end < ?3" +
+            " WHERE booker.id = :bookerId" +
+            " AND i.id = :itemId" +
+            " AND b.end < :now" +
             " ORDER BY b.start DESC")
     List<Booking> findAllCompletedBookingsByBookerIdAndItemId(Long bookerId, Long itemId, LocalDateTime now);
 
@@ -37,7 +37,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
+            " WHERE booker.id = :userId" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByUserId(Long userId);
 
@@ -46,9 +46,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
-            " AND (b.start < ?2" +
-            " AND b.end > ?2)" +
+            " WHERE booker.id = :userId" +
+            " AND (b.start < :now" +
+            " AND b.end > :now)" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByUserIdCurrent(Long userId, LocalDateTime now);
 
@@ -57,8 +57,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
-            " AND b.end < ?2" +
+            " WHERE booker.id = :userId" +
+            " AND b.end < :now" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByUserIdPast(Long userId, LocalDateTime now);
 
@@ -67,8 +67,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
-            " AND b.start > ?2" +
+            " WHERE booker.id = :userId" +
+            " AND b.start > :now" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByUserIdFuture(Long userId, LocalDateTime now);
 
@@ -77,7 +77,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
+            " WHERE booker.id = :userId" +
             " AND b.status = 'WAITING'" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByUserIdWaiting(Long userId);
@@ -87,7 +87,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = ?1" +
+            " WHERE booker.id = :userId" +
             " AND b.status = 'REJECTED'" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByUserIdRejected(Long userId);
@@ -99,7 +99,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = ?1" +
+            " WHERE o.id = :userId" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByOwnerId(Long userId);
 
@@ -108,9 +108,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = ?1" +
-            " AND (b.start < ?2" +
-            " AND b.end > ?2)" +
+            " WHERE o.id = :userId" +
+            " AND (b.start < :now" +
+            " AND b.end > :now)" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByOwnerIdCurrent(Long userId, LocalDateTime now);
 
@@ -119,8 +119,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = ?1" +
-            " AND b.end < ?2" +
+            " WHERE o.id = :userId" +
+            " AND b.end < :now" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByOwnerIdPast(Long userId, LocalDateTime now);
 
@@ -129,8 +129,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = ?1" +
-            " AND b.start > ?2" +
+            " WHERE o.id = :userId" +
+            " AND b.start > :now" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByOwnerIdFuture(Long userId, LocalDateTime now);
 
@@ -139,7 +139,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = ?1" +
+            " WHERE o.id = :userId" +
             " AND b.status = 'WAITING'" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByOwnerIdWaiting(Long userId);
@@ -149,7 +149,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = ?1" +
+            " WHERE o.id = :userId" +
             " AND b.status = 'REJECTED'" +
             " ORDER BY b.start DESC")
     List<Booking> findAllBookingsByOwnerIdRejected(Long userId);
