@@ -19,6 +19,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -39,12 +41,22 @@ public class ItemServiceImpl implements ItemService {
     CommentRepository commentRepository;
     BookingRepository bookingRepository;
 
+    ItemRequestRepository itemRequestRepository;
+
     @Override
     public ItemDto create(@Valid ItemDto itemDto, Long ownerId) {
         Optional<User> optionalOwner = userRepository.findById(ownerId);
         if (optionalOwner.isPresent()) {
             User owner = optionalOwner.get();
-            Item item = ItemMapper.toItem(itemDto, owner);
+            ItemRequest request = null;
+            if(itemDto.getRequestId() != null) {
+                Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+                if (optionalItemRequest.isEmpty()) {
+                    throw new EntityNotFoundException("Not found: request " + itemDto.getRequestId());
+                }
+                request = optionalItemRequest.get();
+            }
+            Item item = ItemMapper.toItem(itemDto, owner, request);
             return ItemMapper.toItemDto(itemRepository.save(item));
         } else {
             throw new EntityNotFoundException("Not found: item owner's id " + ownerId);

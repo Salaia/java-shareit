@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +23,5 @@ public class ItemRequest {
     @ToString.Exclude
     User requester;
 
-    LocalDateTime created;
+    LocalDateTime created = LocalDateTime.now();
 }

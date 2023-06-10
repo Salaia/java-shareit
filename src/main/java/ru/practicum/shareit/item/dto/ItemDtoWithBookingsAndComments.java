@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class ItemDtoWithBookingsAndComments { // Это ужасно длинное название. Думала ItemDtoOutput или ItemDtoExtended - но так названия совсем не говорящие...
+public class ItemDtoWithBookingsAndComments {
     Long id;
     String name;
     String description;

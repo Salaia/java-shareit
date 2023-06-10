@@ -10,6 +10,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByOwnerId(Long ownerId);
 
+    @Query("select i" +
+            " from Item as i" +
+            " join i.request as r" +
+            " where r.id in :requestIds")
+    List<Item> findByRequestIdList(List<Long> requestIds);
+
     @Query(value = "SELECT i " +
             "FROM Item AS i " +
             "WHERE (lower(i.name) LIKE %:text% OR lower(i.description) LIKE %:text%) AND i.available=TRUE")
