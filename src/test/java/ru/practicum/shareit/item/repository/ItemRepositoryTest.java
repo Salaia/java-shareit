@@ -65,6 +65,7 @@ class ItemRepositoryTest {
         item.setRequest(request);
         item = itemRepository.save(item);
     }
+
     @Test
     public void findByRequestIdListSuccess() {
         List<Item> checkList = itemRepository.findByRequestIdList(List.of(request.getId()));

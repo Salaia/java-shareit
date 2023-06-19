@@ -19,6 +19,7 @@ class ItemRequestDtoInputTest {
     @Autowired
     JacksonTester<ItemRequestDtoInput> jacksonTester;
     static ItemRequestDtoInput itemRequestDtoInput;
+
     @BeforeEach
     public void setUp() {
         itemRequestDtoInput = ItemRequestDtoInput.builder()

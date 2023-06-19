@@ -90,15 +90,13 @@ class BookingRepositoryTest {
     public void findAllCompletedBookingsByBookerIdAndItemIdSuccess() {
         booking.setStart(LocalDateTime.of(2020, Month.JANUARY, 1, 12, 1));
         booking.setEnd(LocalDateTime.of(2020, Month.JANUARY, 1, 13, 1));
-        List<Booking> bookingFound = bookingRepository.findAllCompletedBookingsByBookerIdAndItemId
-                (booker.getId(), item.getId(), LocalDateTime.now());
+        List<Booking> bookingFound = bookingRepository.findAllCompletedBookingsByBookerIdAndItemId(booker.getId(), item.getId(), LocalDateTime.now());
         assertEquals(booking, bookingFound.get(0));
     }
 
     @Test
     public void findAllBookingsByUserIdSuccess() {
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserId
-                (booker.getId(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserId(booker.getId(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
@@ -106,8 +104,7 @@ class BookingRepositoryTest {
     public void findAllBookingsByUserIdCurrentSuccess() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().plusHours(1));
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdCurrent
-                (booker.getId(), LocalDateTime.now(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdCurrent(booker.getId(), LocalDateTime.now(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
@@ -115,8 +112,7 @@ class BookingRepositoryTest {
     public void findAllBookingsByBookerIdPastSuccess() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdPast
-                (booker.getId(), LocalDateTime.now(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdPast(booker.getId(), LocalDateTime.now(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
@@ -124,30 +120,26 @@ class BookingRepositoryTest {
     public void findAllBookingsByUserIdFutureSuccess() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(2));
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdFuture
-                (booker.getId(), LocalDateTime.now(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdFuture(booker.getId(), LocalDateTime.now(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
     @Test
     public void findAllBookingsByUserIdWaitingSuccess() {
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdWaiting
-                (booker.getId(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdWaiting(booker.getId(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
     @Test
     public void findAllBookingsByUserIdRejectedSuccess() {
         booking.setStatus(BookingStatus.REJECTED);
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdRejected
-                (booker.getId(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByUserIdRejected(booker.getId(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
     @Test
     public void findAllBookingsByOwnerIdSuccess() {
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerId
-                (owner.getId(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerId(owner.getId(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
@@ -155,8 +147,7 @@ class BookingRepositoryTest {
     public void findAllBookingsByOwnerIdCurrentSuccess() {
         booking.setStart(LocalDateTime.now().minusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(1));
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdCurrent
-                (owner.getId(), LocalDateTime.now(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdCurrent(owner.getId(), LocalDateTime.now(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
@@ -164,8 +155,7 @@ class BookingRepositoryTest {
     public void findAllBookingsByOwnerIdPastSuccess() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdPast
-                (owner.getId(), LocalDateTime.now(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdPast(owner.getId(), LocalDateTime.now(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
@@ -173,23 +163,20 @@ class BookingRepositoryTest {
     public void findAllBookingsByOwnerIdFutureSuccess() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(2));
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdFuture
-                (owner.getId(), LocalDateTime.now(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdFuture(owner.getId(), LocalDateTime.now(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
     @Test
     public void findAllBookingsByOwnerIdWaitingSuccess() {
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdWaiting
-                (owner.getId(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdWaiting(owner.getId(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 
     @Test
     public void findAllBookingsByOwnerIdRejectedSuccess() {
         booking.setStatus(BookingStatus.REJECTED);
-        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdRejected
-                (owner.getId(), params);
+        List<Booking> bookingFound = bookingRepository.findAllBookingsByOwnerIdRejected(owner.getId(), params);
         assertEquals(booking, bookingFound.get(0));
     }
 }

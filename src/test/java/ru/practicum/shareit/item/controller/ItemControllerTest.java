@@ -20,8 +20,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class ItemControllerTest {
     @MockBean
-     ItemService itemService;
+    ItemService itemService;
     @Autowired
-     MockMvc mockMvc;
+    MockMvc mockMvc;
     @Autowired
-     ObjectMapper objectMapper;
-     static User booker;
+    ObjectMapper objectMapper;
+    static User booker;
     static User owner;
     static Item item;
     static ItemDto itemDto;
@@ -167,9 +165,8 @@ class ItemControllerTest {
     public void findAllSuccessful() throws Exception {
         Long userId = 1L;
 
-        when(itemService.findAll (any(), anyInt(), anyInt()))
+        when(itemService.findAll(any(), anyInt(), anyInt()))
                 .thenReturn(List.of(itemBookingCommentDto));
-
         mockMvc.perform(get("/items")
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isOk())
