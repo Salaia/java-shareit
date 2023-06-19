@@ -45,13 +45,20 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDtoOutput> findAllForRequester(Long requesterId) {
+    public List<ItemRequestDtoOutput> findAllForRequester(Long requesterId, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(requesterId);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: requester " + requesterId);
         }
 
-        List<ItemRequest> models = itemRequestRepository.findByRequesterId(requesterId);
+        int page = from / size;
+        Pageable params = PageRequest.of(page, size, Sort.by("created"));
+        List<ItemRequest> models = itemRequestRepository.findByRequesterId(requesterId, params);
+/*
+        if(models == null) {
+            models = new ArrayList<>();
+        }
+*/
         List<ItemRequestDtoOutput> result = ItemRequestMapper.toDtoList(models);
         addItemsToRequests(result);
         return result;
@@ -67,16 +74,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             result = ItemRequestMapper.toDtoList(models);
         } else {
 */
-            Pageable params = PageRequest.of(from, size, Sort.by("created"));
-            List<ItemRequest> models = itemRequestRepository.findAllFromOthers(requesterId, params).toList();
-            result = ItemRequestMapper.toDtoList(models);
-            addItemsToRequests(result);
-       // }
+        Pageable params = PageRequest.of(from, size, Sort.by("created"));
+        List<ItemRequest> models = itemRequestRepository.findAllFromOthers(requesterId, params);
+        result = ItemRequestMapper.toDtoList(models);
+        addItemsToRequests(result);
+        // }
         return result;
     }
 
     @Override
-    public ItemRequestDtoOutput findById(Long userId,Long requestId) {
+    public ItemRequestDtoOutput findById(Long userId, Long requestId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: user " + userId);
@@ -102,8 +109,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             List<Item> itemsForDto = allItems.stream()
                     .filter(item -> item.getRequest().getId().equals(dto.getId()))
                     .collect(Collectors.toList());
-            if(!itemsForDto.isEmpty()) {
+            if (!itemsForDto.isEmpty()) {
                 dto.setItems(ItemMapper.itemDtoList(itemsForDto));
+            } else {
+                dto.setItems(new ArrayList<>());
             }
         }
     }

@@ -18,11 +18,11 @@ public class ItemRequestMapper {
     }
 
     public static ItemRequestDtoOutput toDtoOutput(ItemRequest request) {
-        ItemRequestDtoOutput result = new ItemRequestDtoOutput();
-        result.setId(request.getId());
-        result.setDescription(request.getDescription());
-        result.setCreated(request.getCreated());
-        return result;
+        return ItemRequestDtoOutput.builder()
+                .id(request.getId())
+                .description(request.getDescription())
+                .created(request.getCreated())
+                .build();
     }
 
     public static List<ItemRequestDtoOutput> toDtoList(List<ItemRequest> requests) {

@@ -3,6 +3,9 @@ package ru.practicum.shareit.item.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -49,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
         if (optionalOwner.isPresent()) {
             User owner = optionalOwner.get();
             ItemRequest request = null;
-            if(itemDto.getRequestId() != null) {
+            if (itemDto.getRequestId() != null) {
                 Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
                 if (optionalItemRequest.isEmpty()) {
                     throw new EntityNotFoundException("Not found: request " + itemDto.getRequestId());
@@ -129,13 +132,14 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDtoExtended(item, lastBooking, nextBooking, comments);
     }
 
-    public List<ItemDtoWithBookingsAndComments> findAll(Long ownerId) {
+    public List<ItemDtoWithBookingsAndComments> findAll(Long ownerId, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(ownerId);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: owner id " + ownerId);
         }
-
-        List<Item> items = itemRepository.findByOwnerId(ownerId);
+        int page = from / size;
+        Pageable params = PageRequest.of(page, size, Sort.by("id"));
+        List<Item> items = itemRepository.findByOwnerId(ownerId, params);
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
@@ -179,11 +183,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        List<Item> items = itemRepository.findItemsByTextIgnoreCase(text.toLowerCase());
+        int page = from / size;
+        Pageable params = PageRequest.of(page, size, Sort.by("id"));
+        List<Item> items = itemRepository.findItemsByTextIgnoreCase(text, params);
         return ItemMapper.itemDtoList(items);
     }
 

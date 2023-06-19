@@ -108,7 +108,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoOutput> findAll(Long userId, String state, Integer page, Integer size) {
+    public List<BookingDtoOutput> findAll(Long userId, String state, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: user " + userId);
@@ -121,20 +121,21 @@ public class BookingServiceImpl implements BookingService {
         }
 
         LocalDateTime now = LocalDateTime.now();
+        int page = from / size;
         Pageable params = PageRequest.of(page, size, Sort.by("start"));
         switch (searchState) {
             case ALL:
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserId(userId, params).toList());
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserId(userId, params));
             case CURRENT:
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdCurrent(userId, now, params).toList());
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdCurrent(userId, now, params));
             case PAST:
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdPast(userId, now, params).toList());
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdPast(userId, now, params));
             case FUTURE:
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdFuture(userId, now, params).toList());
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdFuture(userId, now, params));
             case WAITING:
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdWaiting(userId, params).toList());
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdWaiting(userId, params));
             case REJECTED:
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdRejected(userId, params).toList());
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserIdRejected(userId, params));
 
             default:
                 throw new ValidationExceptionCustom("Unknown state: " + state);
@@ -147,22 +148,29 @@ public class BookingServiceImpl implements BookingService {
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: user " + ownerId);
         }
+        BookingSearchState searchState;
+        try {
+            searchState = BookingSearchState.valueOf(state);
+        } catch (IllegalArgumentException exception) {
+            throw new ValidationExceptionCustom("Unknown state: " + state);
+        }
 
         LocalDateTime now = LocalDateTime.now();
-        Pageable params = PageRequest.of(from, size, Sort.by("start"));
-        switch (state) {
-            case "ALL":
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerId(ownerId, params).toList());
-            case "CURRENT":
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdCurrent(ownerId, now, params).toList());
-            case "PAST":
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdPast(ownerId, now, params).toList());
-            case "FUTURE":
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdFuture(ownerId, now, params).toList());
-            case "WAITING":
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdWaiting(ownerId, params).toList());
-            case "REJECTED":
-                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdRejected(ownerId, params).toList());
+        int page = from / size;
+        Pageable params = PageRequest.of(page, size, Sort.by("start"));
+        switch (searchState) {
+            case ALL:
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerId(ownerId, params));
+            case CURRENT:
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdCurrent(ownerId, now, params));
+            case PAST:
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdPast(ownerId, now, params));
+            case FUTURE:
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdFuture(ownerId, now, params));
+            case WAITING:
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdWaiting(ownerId, params));
+            case REJECTED:
+                return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerIdRejected(ownerId, params));
 
             default:
                 throw new ValidationExceptionCustom("Unknown state: " + state);
