@@ -23,4 +23,9 @@ public class ItemRequestDtoOutput {
         ItemRequestDtoOutput output = (ItemRequestDtoOutput) o;
         return Objects.equals(id, output.id) && Objects.equals(description, output.description);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description);
+    }
 }

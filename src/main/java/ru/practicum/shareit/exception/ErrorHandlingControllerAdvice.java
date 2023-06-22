@@ -55,12 +55,6 @@ public class ErrorHandlingControllerAdvice {
         return new ErrorResponse(exception.getMessage());
     }
 
-    @ExceptionHandler(ConflictException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictException(final ConflictException exception) {
-        return new ErrorResponse(exception.getMessage());
-    }
-
     @ExceptionHandler(ForbiddenOperationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleForbiddenOperationException(final ForbiddenOperationException exception) {

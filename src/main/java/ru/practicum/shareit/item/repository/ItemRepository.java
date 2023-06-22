@@ -21,7 +21,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query(value = "SELECT i " +
             "FROM Item AS i " +
-            "WHERE (lower(i.name) LIKE lower(concat('%', :text,'%')) OR lower(i.description) LIKE %:text%) AND i.available=TRUE")
+            "WHERE (lower(i.name) LIKE lower(concat('%', :text,'%')) " +
+            "OR lower(i.description) LIKE lower(concat('%', :text,'%'))) " +
+            "AND i.available=TRUE")
     List<Item> findItemsByTextIgnoreCase(String text, Pageable pageable);
 
 }
