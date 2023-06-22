@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDtoInput {

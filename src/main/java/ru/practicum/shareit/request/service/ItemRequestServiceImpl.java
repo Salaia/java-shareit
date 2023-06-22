@@ -54,11 +54,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         int page = from / size;
         Pageable params = PageRequest.of(page, size, Sort.by("created"));
         List<ItemRequest> models = itemRequestRepository.findByRequesterId(requesterId, params);
-/*
-        if(models == null) {
-            models = new ArrayList<>();
-        }
-*/
         List<ItemRequestDtoOutput> result = ItemRequestMapper.toDtoList(models);
         addItemsToRequests(result);
         return result;
@@ -67,18 +62,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDtoOutput> findAllFromOthers(Long requesterId, Integer from, Integer size) {
         List<ItemRequestDtoOutput> result;
-/*
-        if (from == null || size == null) {
-            Pageable params = PageRequest.of(0, 10, Sort.by("created"));
-            List<ItemRequest> models = itemRequestRepository.findAllFromOthersWithoutParams(requesterId, params).toList();
-            result = ItemRequestMapper.toDtoList(models);
-        } else {
-*/
         Pageable params = PageRequest.of(from, size, Sort.by("created"));
         List<ItemRequest> models = itemRequestRepository.findAllFromOthers(requesterId, params);
         result = ItemRequestMapper.toDtoList(models);
         addItemsToRequests(result);
-        // }
         return result;
     }
 

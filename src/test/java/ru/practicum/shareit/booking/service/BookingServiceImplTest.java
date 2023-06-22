@@ -28,9 +28,11 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -138,7 +140,7 @@ class BookingServiceImplTest {
     @Test
     public void failToBookOwnerOrBookerNotFound() {
 
-        when(userRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
                 () -> bookingService.create(bookingDtoInput, anyLong()));
@@ -146,7 +148,7 @@ class BookingServiceImplTest {
 
     @Test
     public void failToBookItemNotFound() {
-        when(itemRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepository.findById(anyLong())).thenReturn(optionalUserBooker);
 
         assertThrows(EntityNotFoundException.class,

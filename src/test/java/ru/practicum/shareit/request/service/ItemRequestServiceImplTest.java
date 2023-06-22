@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -20,9 +23,12 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -48,6 +54,7 @@ class ItemRequestServiceImplTest {
     static ItemRequestDtoInput requestDtoInput;
     static ItemRequestDtoOutput requestDtoOutput;
     static ItemRequest requestModel;
+    static Pageable params = PageRequest.of(0, 1, Sort.by("created"));
 
     @BeforeEach
     public void setUp() {
@@ -77,6 +84,7 @@ class ItemRequestServiceImplTest {
                 .id(1L)
                 .description(requestDtoInput.getDescription())
                 .created(LocalDateTime.now())
+                .items(new ArrayList<>())
                 .build();
 
         requestModel = new ItemRequest();
@@ -97,7 +105,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     public void failCreateRequesterNotFound() {
-        when(userRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
                 () -> itemRequestService.create(requesterDto.getId(), requestDtoInput));
     }
@@ -105,17 +113,38 @@ class ItemRequestServiceImplTest {
     @Test
     public void findAllForRequesterSuccess() {
         when(userRepository.findById(anyLong())).thenReturn(requesterUserOpt);
-//TODO continue all this ****
         itemRequestService.findAllForRequester(requesterDto.getId(), 0, 3);
 
     }
 
-}
-
-/*
-        when(userRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
-
+    @Test
+    public void failFindByIdUserNotFound() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
-                () -> userService.update(userDto));
+                () -> itemRequestService.findById(requesterDto.getId(), requestModel.getId()));
+    }
 
- */
+    @Test
+    public void failFindByIdRequestNotFound() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(requesterUser));
+        when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class,
+                () -> itemRequestService.findById(requesterDto.getId(), requestModel.getId()));
+    }
+
+    @Test
+    public void findRequestByIdSuccess() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(requesterUser));
+        when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(requestModel));
+        ItemRequestDtoOutput check = itemRequestService.findById(requesterUser.getId(), requestModel.getId());
+        assertEquals(requestDtoOutput, check);
+    }
+
+    @Test
+    public void findAllFromOthersSuccess() {
+        when(itemRequestRepository.findAllFromOthers(anyLong(), any())).thenReturn(List.of(requestModel));
+        List<ItemRequestDtoOutput> result = itemRequestService.findAllFromOthers(requesterDto.getId(), 0, 1);
+        assertEquals(requestDtoOutput, result.get(0));
+    }
+
+}

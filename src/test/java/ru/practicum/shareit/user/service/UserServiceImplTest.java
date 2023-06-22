@@ -17,7 +17,8 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -79,7 +80,7 @@ class UserServiceImplTest {
 
     @Test
     public void failUpdateUserNotFound() {
-        when(userRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
                 () -> userService.update(userDto));
@@ -103,17 +104,23 @@ class UserServiceImplTest {
 
     @Test
     public void failFindUserByIdNotFound() {
-        when(userRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> userService.findUserById(-1L));
+                () -> userService.findUserById(999L));
     }
 
     @Test
     public void failRemoveUserNotFound() {
-        when(userRepository.findById(anyLong())).thenThrow(new EntityNotFoundException("Not Found"));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> userService.removeUser(-1L));
+                () -> userService.removeUser(999L));
+    }
+
+    @Test
+    public void removeUserSuccess() {
+        when(userRepository.findById(anyLong())).thenReturn(optionalUser);
+        userService.removeUser(1L);
     }
 }

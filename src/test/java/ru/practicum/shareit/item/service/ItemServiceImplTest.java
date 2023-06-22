@@ -5,7 +5,8 @@ import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.ValidationExceptionCustom;
 import ru.practicum.shareit.item.dto.CommentDtoInput;
 import ru.practicum.shareit.item.dto.CommentDtoOutput;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -25,13 +27,16 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,6 +81,9 @@ class ItemServiceImplTest {
     static CommentDtoInput commentDtoInput;
     static Comment comment;
     static CommentDtoOutput commentDtoOutput;
+    static ItemRequest itemRequest;
+    static ItemDto itemDtoForRequest;
+    static Item itemForRequest;
 
     @BeforeEach
     public void setUp() {
@@ -153,6 +161,28 @@ class ItemServiceImplTest {
         commentDtoOutput.setAuthorName(user.getName());
         commentDtoOutput.setCreated(comment.getCreated());
 
+        itemRequest = new ItemRequest();
+        itemRequest.setId(1L);
+        itemRequest.setRequester(user);
+        itemRequest.setDescription("Request description");
+        itemRequest.setCreated(LocalDateTime.now());
+
+        itemDtoForRequest = ItemDto.builder()
+                .id(2L)
+                .name("Item for request name")
+                .description("Describe item for request")
+                .available(true)
+                .requestId(1L)
+                .build();
+
+        itemForRequest = new Item();
+        itemForRequest.setId(itemDtoForRequest.getId());
+        itemForRequest.setName(itemDtoForRequest.getName());
+        itemForRequest.setDescription(itemDtoForRequest.getDescription());
+        itemForRequest.setOwner(owner);
+        itemForRequest.setRequest(itemRequest);
+        itemForRequest.setAvailable(itemDtoForRequest.getAvailable());
+
     }
 
     @Test
@@ -168,13 +198,27 @@ class ItemServiceImplTest {
     @Test
     public void createFailInCauseOfUserNotFound() {
         Long ownerId = 999L;
-        doThrow(new EntityNotFoundException("Not found: user id: " + ownerId)).when(userRepository)
-                .findById(ownerId);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> itemService.create(itemDto, ownerId))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("Not found: user id: " + ownerId);
+                .isInstanceOf(EntityNotFoundException.class);
         verify(itemRepository, times(0)).save(any());
+    }
+
+    @Test
+    public void failCreateItemForRequestWhenRequestNotFound() {
+        itemDto.setRequestId(999L);
+        assertThatThrownBy(() -> itemService.create(itemDto, owner.getId()))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
+    @Test
+    public void createItemForRequestSuccess() {
+        when(itemRepository.save(any())).thenReturn(itemForRequest);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
+        when(itemRequestRepository.findById(itemRequest.getId())).thenReturn(Optional.of(itemRequest));
+        ItemDto result = itemService.create(itemDtoForRequest, owner.getId());
+        assertEquals(itemDtoForRequest, result);
     }
 
     @Test
@@ -201,10 +245,17 @@ class ItemServiceImplTest {
     public void findItemByIdSuccessful() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(commentRepository.findByItemId(anyLong())).thenReturn(new ArrayList<>());
-
-        ItemDtoWithBookingsAndComments returnedItemDto = itemService.findItemById(user.getId(), item.getId());
+        when(bookingRepository.findByItemId(item.getId())).thenReturn(List.of(booking, booking));
+        ItemDtoWithBookingsAndComments returnedItemDto = itemService.findItemById(item.getId(), item.getId());
         assertNotNull(returnedItemDto);
         assertEquals(itemBookingCommentDto, returnedItemDto);
+    }
+
+    @Test
+    public void failFindItemByIdItemNotFound() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class,
+                () -> itemService.findItemById(999L, owner.getId()));
     }
 
     @Test
@@ -246,4 +297,38 @@ class ItemServiceImplTest {
         assertNotNull(returnedCommentDto);
         assertEquals(commentDtoOutput, returnedCommentDto);
     }
+
+    @Test
+    public void failCreateCommentEmptyComment() {
+        commentDtoInput.setText("   ");
+        assertThrows(ValidationExceptionCustom.class,
+                () -> itemService.createComment(item.getId(), user.getId(), commentDtoInput));
+    }
+
+    @Test
+    public void failCreateCommentItemNotFound() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class,
+                () -> itemService.createComment(item.getId(), user.getId(), commentDtoInput));
+    }
+
+    @Test
+    public void failCreateCommentNotAllowed() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepository.findAllCompletedBookingsByBookerIdAndItemId(anyLong(), anyLong(), any()))
+                .thenReturn(new ArrayList<>());
+        assertThrows(ValidationExceptionCustom.class,
+                () -> itemService.createComment(item.getId(), user.getId(), commentDtoInput));
+    }
+
+    @Test
+    public void failCreateCommentUserNotFound() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
+        when(bookingRepository.findAllCompletedBookingsByBookerIdAndItemId(anyLong(), anyLong(), any()))
+                .thenReturn(List.of(booking, booking));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class,
+                () -> itemService.createComment(item.getId(), user.getId(), commentDtoInput));
+    }
+
 }
