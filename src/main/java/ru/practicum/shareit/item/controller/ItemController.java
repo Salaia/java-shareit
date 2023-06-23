@@ -28,7 +28,7 @@ public class ItemController {
     @PostMapping
     public ItemDto create(@RequestHeader(HEADER_SHARER) Long ownerId,
                           @Validated(ItemDto.Create.class) @RequestBody ItemDto itemDto) {
-        log.debug("Request received: create item.");
+        log.debug("Request received: create item: " + itemDto + "\nfor user: " + ownerId);
         return itemService.create(itemDto, ownerId);
     }
 
@@ -37,14 +37,14 @@ public class ItemController {
                           @PathVariable Long itemId,
                           @RequestHeader(HEADER_SHARER) Long ownerId) {
         itemDto.setId(itemId);
-        log.debug("Request received: update item.");
+        log.debug("Request received: update item: " + itemDto + ", id: " + itemId + "\nfor user: " + ownerId);
         return itemService.update(itemDto, ownerId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDtoWithBookingsAndComments findItemById(@PathVariable Long itemId,
                                                        @RequestHeader(HEADER_SHARER) Long userId) {
-        log.debug("Request received: find item by id.");
+        log.debug("Request received: find item by id: " + itemId + " from user: " + userId);
         return itemService.findItemById(itemId, userId);
     }
 
@@ -52,7 +52,8 @@ public class ItemController {
     public List<ItemDtoWithBookingsAndComments> findAll(@RequestHeader(HEADER_SHARER) Long ownerId,
                                                         @RequestParam(defaultValue = "0") Integer from,
                                                         @RequestParam(defaultValue = "20") Integer size) {
-        log.debug("Request received: find all items for owner.");
+        log.debug("Request received: find all items for owner: " + ownerId + "\nwith parameters:" +
+                "\nfrom: " + from + ", size: " + size);
         return itemService.findAll(ownerId, from, size);
     }
 
@@ -60,14 +61,16 @@ public class ItemController {
     public List<ItemDto> search(String text,
                                 @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                 @RequestParam(defaultValue = "20") @PositiveOrZero Integer size) {
-        log.debug("Request received: search for item.");
+        log.debug("Request received: search for item by text: " + text + "\nwith parameters: " +
+                "\nfrom: " + from + ", size: " + size);
         return itemService.search(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDtoOutput createComment(@PathVariable Long itemId, @RequestHeader(HEADER_SHARER) Long bookerId,
                                           @RequestBody CommentDtoInput commentDto) {
-        log.debug("Request received: create comment.");
+        log.debug("Request received: create comment: " + commentDto +
+                "\nfor item: " + itemId + ", from booker: " + bookerId);
         return itemService.createComment(itemId, bookerId, commentDto);
     }
 }

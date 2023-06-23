@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,25 +30,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ItemRequestController.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class ItemRequestControllerTest {
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
     @Autowired
     ObjectMapper mapper;
 
     @MockBean
     ItemRequestService itemRequestService;
 
-    private final UserDto requester = UserDto.builder()
+    final UserDto requester = UserDto.builder()
             .id(1L)
             .name("requester")
             .email("requester.user@mail.com")
             .build();
 
-    private final ItemRequestDtoInput requestDtoInput = ItemRequestDtoInput.builder()
+    final ItemRequestDtoInput requestDtoInput = ItemRequestDtoInput.builder()
             .description("Request").build();
 
-    private final ItemRequestDtoOutput requestDtoOutput = ItemRequestDtoOutput.builder()
+    final ItemRequestDtoOutput requestDtoOutput = ItemRequestDtoOutput.builder()
             .id(1L)
             .description("Request")
             .created(LocalDateTime.now())

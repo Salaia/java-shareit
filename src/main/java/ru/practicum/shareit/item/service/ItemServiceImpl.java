@@ -3,12 +3,12 @@ package ru.practicum.shareit.item.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.configuration.PaginationParameters;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.ForbiddenOperationException;
 import ru.practicum.shareit.exception.ValidationExceptionCustom;
@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemServiceImpl implements ItemService {
@@ -100,6 +101,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDtoWithBookingsAndComments findItemById(Long itemId, Long userId) {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) {
@@ -132,13 +134,14 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDtoExtended(item, lastBooking, nextBooking, comments);
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<ItemDtoWithBookingsAndComments> findAll(Long ownerId, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(ownerId);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: owner id " + ownerId);
         }
-        int page = from / size;
-        Pageable params = PageRequest.of(page, size, Sort.by("id"));
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("id"));
         List<Item> items = itemRepository.findByOwnerId(ownerId, params);
         if (items.isEmpty()) {
             return new ArrayList<>();
@@ -183,12 +186,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> search(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        int page = from / size;
-        Pageable params = PageRequest.of(page, size, Sort.by("id"));
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("id"));
         List<Item> items = itemRepository.findItemsByTextIgnoreCase(text, params);
         return ItemMapper.itemDtoList(items);
     }

@@ -31,8 +31,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.item as i" +
             " WHERE booker.id = :bookerId" +
             " AND i.id = :itemId" +
-            " AND b.end < :now" +
-            " ORDER BY b.start DESC")
+            " AND b.end < :now")
     List<Booking> findAllCompletedBookingsByBookerIdAndItemId(Long bookerId, Long itemId, LocalDateTime now);
 
     // ALL BY_BOOKER
@@ -40,8 +39,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " FROM Booking as b" +
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
-            " WHERE booker.id = :userId" +
-            " ORDER BY b.start DESC")
+            " WHERE booker.id = :userId")
     List<Booking> findAllBookingsByUserId(Long userId, Pageable pageable);
 
     // CURRENT BY_BOOKER
@@ -51,8 +49,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.item as i" +
             " WHERE booker.id = :userId" +
             " AND (b.start < :now" +
-            " AND b.end > :now)" +
-            " ORDER BY b.start DESC")
+            " AND b.end > :now)")
     List<Booking> findAllBookingsByUserIdCurrent(Long userId, LocalDateTime now, Pageable pageable);
 
     // PAST BY_BOOKER
@@ -61,8 +58,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
             " WHERE booker.id = :userId" +
-            " AND b.end < :now" +
-            " ORDER BY b.start DESC")
+            " AND b.end < :now")
     List<Booking> findAllBookingsByUserIdPast(Long userId, LocalDateTime now, Pageable pageable);
 
     // FUTURE BY_BOOKER
@@ -71,8 +67,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
             " WHERE booker.id = :userId" +
-            " AND b.start > :now" +
-            " ORDER BY b.start DESC")
+            " AND b.start > :now")
     List<Booking> findAllBookingsByUserIdFuture(Long userId, LocalDateTime now, Pageable pageable);
 
     // WAITING BY_BOOKER
@@ -81,8 +76,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
             " WHERE booker.id = :userId" +
-            " AND b.status = 'WAITING'" +
-            " ORDER BY b.start DESC")
+            " AND b.status = 'WAITING'")
     List<Booking> findAllBookingsByUserIdWaiting(Long userId, Pageable pageable);
 
     // REJECTED BY_BOOKER
@@ -91,8 +85,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.booker as booker" +
             " JOIN b.item as i" +
             " WHERE booker.id = :userId" +
-            " AND b.status = 'REJECTED'" +
-            " ORDER BY b.start DESC")
+            " AND b.status = 'REJECTED'")
     List<Booking> findAllBookingsByUserIdRejected(Long userId, Pageable pageable);
 
     // ALL BY_OWNER
@@ -100,8 +93,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " FROM Booking as b" +
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
-            " WHERE o.id = :userId" +
-            " ORDER BY b.start DESC")
+            " WHERE o.id = :userId")
     List<Booking> findAllBookingsByOwnerId(Long userId, Pageable pageable);
 
     // CURRENT BY_OWNER
@@ -111,8 +103,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN i.owner as o" +
             " WHERE o.id = :userId" +
             " AND (b.start < :now" +
-            " AND b.end > :now)" +
-            " ORDER BY b.start DESC")
+            " AND b.end > :now)")
     List<Booking> findAllBookingsByOwnerIdCurrent(Long userId, LocalDateTime now, Pageable pageable);
 
     // PAST BY_OWNER
@@ -121,8 +112,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
             " WHERE o.id = :userId" +
-            " AND b.end < :now" +
-            " ORDER BY b.start DESC")
+            " AND b.end < :now")
     List<Booking> findAllBookingsByOwnerIdPast(Long userId, LocalDateTime now, Pageable pageable);
 
     // FUTURE BY_OWNER
@@ -131,8 +121,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
             " WHERE o.id = :userId" +
-            " AND b.start > :now" +
-            " ORDER BY b.start DESC")
+            " AND b.start > :now")
     List<Booking> findAllBookingsByOwnerIdFuture(Long userId, LocalDateTime now, Pageable pageable);
 
     // WAITING BY_OWNER
@@ -141,8 +130,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
             " WHERE o.id = :userId" +
-            " AND b.status = 'WAITING'" +
-            " ORDER BY b.start DESC")
+            " AND b.status = 'WAITING'")
     List<Booking> findAllBookingsByOwnerIdWaiting(Long userId, Pageable pageable);
 
     // REJECTED BY_OWNER
@@ -151,8 +139,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             " JOIN b.item as i" +
             " JOIN i.owner as o" +
             " WHERE o.id = :userId" +
-            " AND b.status = 'REJECTED'" +
-            " ORDER BY b.start DESC")
+            " AND b.status = 'REJECTED'")
     List<Booking> findAllBookingsByOwnerIdRejected(Long userId, Pageable pageable);
 
 }

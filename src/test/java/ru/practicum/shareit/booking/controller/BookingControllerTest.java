@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,45 +32,46 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BookingController.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class BookingControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
     @Autowired
     ObjectMapper mapper;
 
     @MockBean
     BookingService bookingService;
 
-    private final UserDto owner = UserDto.builder()
+    final UserDto owner = UserDto.builder()
             .id(1L)
             .name("Owner")
             .email("owner.user@mail.com")
             .build();
 
-    private final UserDto booker = UserDto.builder()
+    final UserDto booker = UserDto.builder()
             .id(2L)
             .name("Booker")
             .email("booker.user@mail.com")
             .build();
 
-    private final ItemDto itemDto = ItemDto.builder()
+    final ItemDto itemDto = ItemDto.builder()
             .id(1L)
             .name("Item name")
             .description("Item description")
             .available(false)
             .build();
 
-    private final LocalDateTime start = LocalDateTime.of(3023, Month.JUNE, 16, 14, 1, 1);
-    private final LocalDateTime end = LocalDateTime.of(3023, Month.JUNE, 16, 14, 30, 1);
-    private final BookingDtoInput bookingDtoInput = BookingDtoInput.builder()
+    final LocalDateTime start = LocalDateTime.of(3023, Month.JUNE, 16, 14, 1, 1);
+    final LocalDateTime end = LocalDateTime.of(3023, Month.JUNE, 16, 14, 30, 1);
+    final BookingDtoInput bookingDtoInput = BookingDtoInput.builder()
             .bookerId(booker.getId())
             .itemId(itemDto.getId())
             .start(start)
             .end(end)
             .build();
 
-    private final BookingDtoOutput bookingDtoOutput = BookingDtoOutput.builder()
+    final BookingDtoOutput bookingDtoOutput = BookingDtoOutput.builder()
             .id(1L)
             .booker(booker)
             .item(itemDto)

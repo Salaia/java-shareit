@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,15 +24,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class UserControllerTest {
     @MockBean
-    private UserService userService;
+    UserService userService;
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
     @Autowired
     ObjectMapper mapper;
 
-    private final UserDto userDto = UserDto.builder()
+    final UserDto userDto = UserDto.builder()
             .id(1L)
             .name("Test User")
             .email("test.user@mail.com")

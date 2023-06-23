@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@Validated(UserDto.Create.class) @RequestBody UserDto userDto) {
-        log.debug("Request received: create user.");
+        log.debug("Request received: create user: " + userDto);
         return userService.create(userDto);
     }
 
@@ -28,7 +28,7 @@ public class UserController {
     public UserDto update(@Validated(UserDto.Update.class) @RequestBody UserDto userDto,
                           @PathVariable("id") @Positive Long id) {
         userDto.setId(id);
-        log.debug("Request received: update user.");
+        log.debug("Request received: update user: id: " + id + ", " + userDto);
         return userService.update(userDto);
     }
 
@@ -40,13 +40,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDto findUserById(@PathVariable("id") @Positive Long id) {
-        log.debug("Request received: find user by id.");
+        log.debug("Request received: find user by id: " + id);
         return userService.findUserById(id);
     }
 
     @DeleteMapping("/{id}")
     public void removeUser(@PathVariable @Positive Long id) {
-        log.debug("Request received: remove user by id.");
+        log.debug("Request received: remove user by id: " + id);
         userService.removeUser(id);
     }
 }

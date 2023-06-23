@@ -42,7 +42,7 @@ class BookingRepositoryTest {
     static User booker;
     static Item item;
     static Booking booking;
-    static Pageable params = PageRequest.of(0, 1, Sort.by("start"));
+    static Pageable params = PageRequest.of(0, 1, Sort.by("start").descending());
 
     @BeforeEach
     public void setUp() {

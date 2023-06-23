@@ -55,7 +55,6 @@ class ItemControllerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-//  = new ItemDto(1L,"Item", "Description", true, null)
         itemDto = ItemDto.builder().build();
         itemDto.setId(1L);
         itemDto.setName("Item");

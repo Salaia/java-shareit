@@ -13,14 +13,12 @@ public interface ItemRequestRepository extends PagingAndSortingRepository<ItemRe
 
     @Query(value = "select ir" +
             " from ItemRequest as ir" +
-            " where ir.requester.id = :requesterId" +
-            " order by ir.created")
+            " where ir.requester.id = :requesterId")
     List<ItemRequest> findByRequesterId(Long requesterId, Pageable pageable);
 
     @Query(value = "select ir" +
             " from ItemRequest as ir" +
-            " where requester.id != :userId" +
-            " order by ir.created")
+            " where requester.id != :userId")
     List<ItemRequest> findAllFromOthers(Long userId, Pageable pageable);
 
 }

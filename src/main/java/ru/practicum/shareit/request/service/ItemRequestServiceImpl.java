@@ -3,10 +3,10 @@ package ru.practicum.shareit.request.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.configuration.PaginationParameters;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
@@ -51,8 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new EntityNotFoundException("Not found: requester " + requesterId);
         }
 
-        int page = from / size;
-        Pageable params = PageRequest.of(page, size, Sort.by("created"));
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("created").descending());
         List<ItemRequest> models = itemRequestRepository.findByRequesterId(requesterId, params);
         List<ItemRequestDtoOutput> result = ItemRequestMapper.toDtoList(models);
         addItemsToRequests(result);
@@ -60,9 +60,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequestDtoOutput> findAllFromOthers(Long requesterId, Integer from, Integer size) {
         List<ItemRequestDtoOutput> result;
-        Pageable params = PageRequest.of(from, size, Sort.by("created"));
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("created").descending());
         List<ItemRequest> models = itemRequestRepository.findAllFromOthers(requesterId, params);
         result = ItemRequestMapper.toDtoList(models);
         addItemsToRequests(result);
@@ -70,6 +71,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequestDtoOutput findById(Long userId, Long requestId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {

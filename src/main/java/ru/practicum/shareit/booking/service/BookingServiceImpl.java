@@ -3,10 +3,9 @@ package ru.practicum.shareit.booking.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -14,6 +13,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingSearchState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.configuration.PaginationParameters;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.ValidationExceptionCustom;
 import ru.practicum.shareit.item.model.Item;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookingServiceImpl implements BookingService {
@@ -92,6 +93,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDtoOutput findById(Long bookingId, Long userId) {
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
         if (optionalBooking.isEmpty()) {
@@ -108,6 +110,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDtoOutput> findAll(Long userId, String state, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
@@ -121,8 +124,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        int page = from / size;
-        Pageable params = PageRequest.of(page, size, Sort.by("start"));
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("start").descending());
         switch (searchState) {
             case ALL:
                 return BookingMapper.toDtoList(bookingRepository.findAllBookingsByUserId(userId, params));
@@ -143,6 +145,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDtoOutput> findAllByOwner(Long ownerId, String state, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(ownerId);
         if (optionalUser.isEmpty()) {
@@ -156,8 +159,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        int page = from / size;
-        Pageable params = PageRequest.of(page, size, Sort.by("start"));
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("start").descending());
         switch (searchState) {
             case ALL:
                 return BookingMapper.toDtoList(bookingRepository.findAllBookingsByOwnerId(ownerId, params));
