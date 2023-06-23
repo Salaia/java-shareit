@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.CommentDtoInput;
 import ru.practicum.shareit.item.dto.CommentDtoOutput;
 import ru.practicum.shareit.item.model.Comment;
@@ -10,10 +10,10 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@UtilityClass
 public class CommentMapper {
 
-    public static Comment toComment(CommentDtoInput input, User author, Item item) {
+    public Comment toComment(CommentDtoInput input, User author, Item item) {
         Comment comment = new Comment();
         comment.setText(input.getText());
         comment.setAuthor(author);
@@ -21,7 +21,7 @@ public class CommentMapper {
         return comment;
     }
 
-    public static CommentDtoOutput toCommentDto(Comment comment) {
+    public CommentDtoOutput toCommentDto(Comment comment) {
         CommentDtoOutput output = new CommentDtoOutput();
         output.setId(comment.getId());
         output.setText(comment.getText());
@@ -30,7 +30,7 @@ public class CommentMapper {
         return output;
     }
 
-    public static List<CommentDtoOutput> toCommentDtoList(List<Comment> comments) {
+    public List<CommentDtoOutput> toCommentDtoList(List<Comment> comments) {
         List<CommentDtoOutput> result = new ArrayList<>();
         for (Comment comment : comments) {
             result.add(toCommentDto(comment));

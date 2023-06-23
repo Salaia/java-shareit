@@ -1,9 +1,8 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -16,12 +15,11 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@UtilityClass
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
 public class ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
+    public ItemDto toItemDto(Item item) {
         ItemDto result = ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -34,7 +32,7 @@ public class ItemMapper {
         return result;
     }
 
-    public static Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
+    public Item toItem(ItemDto itemDto, User owner, ItemRequest request) {
         Item item = new Item();
         item.setId(itemDto.getId());
         item.setName(itemDto.getName());
@@ -45,7 +43,7 @@ public class ItemMapper {
         return item;
     }
 
-    public static List<ItemDto> itemDtoList(List<Item> items) {
+    public List<ItemDto> itemDtoList(List<Item> items) {
         List<ItemDto> dtos = new ArrayList<>();
         for (Item item : items) {
             dtos.add(toItemDto(item));
@@ -53,7 +51,7 @@ public class ItemMapper {
         return dtos;
     }
 
-    public static ItemDtoWithBookingsAndComments toDtoExtended(Item item, Booking lastBooking, Booking nextBooking, List<Comment> comments) {
+    public ItemDtoWithBookingsAndComments toDtoExtended(Item item, Booking lastBooking, Booking nextBooking, List<Comment> comments) {
         ItemDtoWithBookingsAndComments result = new ItemDtoWithBookingsAndComments();
         result.setId(item.getId());
         result.setName(item.getName());

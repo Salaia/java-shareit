@@ -1,9 +1,8 @@
 package ru.practicum.shareit.booking.mapper;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
@@ -16,12 +15,11 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@UtilityClass
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
 public class BookingMapper {
 
-    public static BookingDtoOutput toBookingDto(Booking booking) {
+    public BookingDtoOutput toBookingDto(Booking booking) {
         return BookingDtoOutput.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
@@ -32,7 +30,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public static Booking toBooking(BookingDtoInput bookingDto, User booker, Item item) {
+    public Booking toBooking(BookingDtoInput bookingDto, User booker, Item item) {
         Booking booking = new Booking();
         booking.setStart(bookingDto.getStart());
         booking.setEnd(bookingDto.getEnd());
@@ -41,13 +39,13 @@ public class BookingMapper {
         return booking;
     }
 
-    public static List<BookingDtoOutput> toDtoList(List<Booking> bookingList) {
+    public List<BookingDtoOutput> toDtoList(List<Booking> bookingList) {
         return bookingList.stream()
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
 
-    public static BookingDtoShort toShortDto(Booking booking) {
+    public BookingDtoShort toShortDto(Booking booking) {
         BookingDtoShort result = new BookingDtoShort();
         result.setId(booking.getId());
         result.setBookerId(booking.getBooker().getId());

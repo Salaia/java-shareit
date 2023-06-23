@@ -1,16 +1,16 @@
 package ru.practicum.shareit.user.mapper;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@UtilityClass
 public class UserMapper {
 
-    public static UserDto toUserDto(User user) {
+    public UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -18,7 +18,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static User toUser(UserDto userDto) {
+    public User toUser(UserDto userDto) {
         User user = new User();
         user.setId(userDto.getId());
         user.setName(userDto.getName());
@@ -26,7 +26,7 @@ public class UserMapper {
         return user;
     }
 
-    public static List<UserDto> userDtoList(List<User> users) {
+    public List<UserDto> userDtoList(List<User> users) {
         List<UserDto> dtos = new ArrayList<>();
         for (User user : users) {
             dtos.add(toUserDto(user));
