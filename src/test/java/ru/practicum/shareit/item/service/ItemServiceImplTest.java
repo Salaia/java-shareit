@@ -127,7 +127,7 @@ class ItemServiceImplTest {
 
         bookingDtoForItemOwner = new BookingDtoShort();
         bookingDtoForItemOwner.setId(1L);
-        bookingDtoForItemOwner.setBookerId(user.getId()); // or not "user"?
+        bookingDtoForItemOwner.setBookerId(user.getId());
 
         booking = new Booking();
         booking.setId(1L);

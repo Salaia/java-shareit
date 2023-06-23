@@ -78,8 +78,6 @@ class ItemControllerTest {
         item.setOwner(owner);
         item.setAvailable(true);
 
-        // //  = new ItemDto(
-        //            1L,"Item", "Description", true, null)
         itemResponseDto = ItemDto.builder().build();
         itemResponseDto.setId(1L);
         itemResponseDto.setName("Item");
@@ -93,7 +91,6 @@ class ItemControllerTest {
         commentDtoOutput.setAuthorName("User");
         commentDtoOutput.setText("Comment text");
         commentDtoOutput.setCreated(Instant.now());
-        //commentDtoOutput.setCreated(LocalDateTime.of(2023, Month.JUNE, 6, 12, 0, 0));
 
         itemBookingCommentDto = new ItemDtoWithBookingsAndComments();
         itemBookingCommentDto.setId(1L);
@@ -113,7 +110,7 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())// .isBadRequest() / .isNotFound() and other
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(itemDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
                 .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
