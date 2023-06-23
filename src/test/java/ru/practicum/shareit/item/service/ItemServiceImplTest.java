@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
@@ -45,9 +46,14 @@ import static org.mockito.Mockito.*;
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+//@SpringBootTest
+
 class ItemServiceImplTest {
     @InjectMocks
-    private ItemServiceImpl itemService;
+    ItemServiceImpl itemService;
+
+    @Autowired
+    ItemService itemServiceIntegration;
     @Mock
     ItemRepository itemRepository;
     @Mock
@@ -58,6 +64,17 @@ class ItemServiceImplTest {
     CommentRepository commentRepository;
     @Mock
     ItemRequestRepository itemRequestRepository;
+
+    @Autowired
+    ItemRepository itemRepositoryIntegrated;
+    @Autowired
+    UserRepository userRepositoryIntegrated;
+    @Autowired
+    BookingRepository bookingRepositoryIntegrated;
+    @Autowired
+    CommentRepository commentRepositoryIntegrated;
+    @Autowired
+    ItemRequestRepository itemRequestRepositoryIntegrated;
 
     static User owner;
     static User user;
@@ -322,4 +339,39 @@ class ItemServiceImplTest {
                 () -> itemService.createComment(item.getId(), user.getId(), commentDtoInput));
     }
 
+    /*@Test
+    public void findItemByIdIntegrated() {
+        User ownerOpt = userRepositoryIntegrated.save(owner);
+        User bookerOpt = userRepositoryIntegrated.save(user);
+        Item itemSaved = itemRepositoryIntegrated.save(item);
+
+        ItemDtoWithBookingsAndComments check = itemServiceIntegration.findItemById(item.getId(), owner.getId());
+        assertEquals(check.getId(), itemBookingCommentDto.getId());
+        assertEquals(check.getName(), itemBookingCommentDto.getName());
+        assertEquals(check.getDescription(), itemBookingCommentDto.getDescription());
+    }
+
+    @Test
+    public void findAllIntegrated() {
+        User ownerOpt = userRepositoryIntegrated.save(owner);
+        User bookerOpt = userRepositoryIntegrated.save(user);
+        Item itemSaved = itemRepositoryIntegrated.save(item);
+
+        List<ItemDtoWithBookingsAndComments> check = itemServiceIntegration.findAll(owner.getId(), 0, 1);
+        assertEquals(check.get(0).getId(), itemBookingCommentDto.getId());
+        assertEquals(check.get(0).getName(), itemBookingCommentDto.getName());
+        assertEquals(check.get(0).getDescription(), itemBookingCommentDto.getDescription());
+    }
+
+    @Test
+    public void searchIntegrated() {
+        User ownerOpt = userRepositoryIntegrated.save(owner);
+        User bookerOpt = userRepositoryIntegrated.save(user);
+        Item itemSaved = itemRepositoryIntegrated.save(item);
+
+        List<ItemDto> check = itemServiceIntegration.search("itEm", 0, 1);
+        assertEquals(check.get(0).getId(), itemDto.getId());
+        assertEquals(check.get(0).getName(), itemDto.getName());
+        assertEquals(check.get(0).getDescription(), itemDto.getDescription());
+    }*/
 }
