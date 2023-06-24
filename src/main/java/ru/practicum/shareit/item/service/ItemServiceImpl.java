@@ -3,11 +3,14 @@ package ru.practicum.shareit.item.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exception.ForbiddenOperationException;
+import ru.practicum.shareit.configuration.PaginationParameters;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.ForbiddenOperationException;
 import ru.practicum.shareit.exception.ValidationExceptionCustom;
 import ru.practicum.shareit.item.dto.CommentDtoInput;
 import ru.practicum.shareit.item.dto.CommentDtoOutput;
@@ -19,6 +22,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -31,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemServiceImpl implements ItemService {
@@ -39,12 +45,22 @@ public class ItemServiceImpl implements ItemService {
     CommentRepository commentRepository;
     BookingRepository bookingRepository;
 
+    ItemRequestRepository itemRequestRepository;
+
     @Override
     public ItemDto create(@Valid ItemDto itemDto, Long ownerId) {
         Optional<User> optionalOwner = userRepository.findById(ownerId);
         if (optionalOwner.isPresent()) {
             User owner = optionalOwner.get();
-            Item item = ItemMapper.toItem(itemDto, owner);
+            ItemRequest request = null;
+            if (itemDto.getRequestId() != null) {
+                Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+                if (optionalItemRequest.isEmpty()) {
+                    throw new EntityNotFoundException("Not found: request " + itemDto.getRequestId());
+                }
+                request = optionalItemRequest.get();
+            }
+            Item item = ItemMapper.toItem(itemDto, owner, request);
             return ItemMapper.toItemDto(itemRepository.save(item));
         } else {
             throw new EntityNotFoundException("Not found: item owner's id " + ownerId);
@@ -85,6 +101,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDtoWithBookingsAndComments findItemById(Long itemId, Long userId) {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) {
@@ -117,13 +134,15 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDtoExtended(item, lastBooking, nextBooking, comments);
     }
 
-    public List<ItemDtoWithBookingsAndComments> findAll(Long ownerId) {
+    @Override
+    @Transactional(readOnly = true)
+    public List<ItemDtoWithBookingsAndComments> findAll(Long ownerId, Integer from, Integer size) {
         Optional<User> optionalUser = userRepository.findById(ownerId);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("Not found: owner id " + ownerId);
         }
-
-        List<Item> items = itemRepository.findByOwnerId(ownerId);
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("id"));
+        List<Item> items = itemRepository.findByOwnerId(ownerId, params);
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
@@ -167,11 +186,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    @Transactional(readOnly = true)
+    public List<ItemDto> search(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        List<Item> items = itemRepository.findItemsByTextIgnoreCase(text.toLowerCase());
+        PaginationParameters params = new PaginationParameters(from, size, Sort.by("id"));
+        List<Item> items = itemRepository.findItemsByTextIgnoreCase(text, params);
         return ItemMapper.itemDtoList(items);
     }
 

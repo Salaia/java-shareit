@@ -32,11 +32,4 @@ public class Comment {
 
     Instant created = Instant.now();
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                '}';
-    }
 }

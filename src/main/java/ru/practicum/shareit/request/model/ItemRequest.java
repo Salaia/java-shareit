@@ -1,6 +1,7 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.shareit.user.model.User;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "requests", schema = "shareit")
+@NoArgsConstructor
 public class ItemRequest {
 
     @Id
@@ -23,5 +25,5 @@ public class ItemRequest {
     @ToString.Exclude
     User requester;
 
-    LocalDateTime created;
+    LocalDateTime created = LocalDateTime.now();
 }

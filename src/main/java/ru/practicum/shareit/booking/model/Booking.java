@@ -36,13 +36,4 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     BookingStatus status;
-
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
-                '}';
-    }
 }
