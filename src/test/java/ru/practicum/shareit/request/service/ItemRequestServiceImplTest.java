@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,25 +36,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@SpringBootTest
 class ItemRequestServiceImplTest {
 
     @InjectMocks
     ItemRequestServiceImpl itemRequestService;
-    @Autowired
-    ItemRequestService itemRequestServiceIntegration;
     @Mock
     ItemRequestRepository itemRequestRepository;
     @Mock
     UserRepository userRepository;
     @Mock
     ItemRepository itemRepository;
-    @Autowired
-    ItemRequestRepository itemRequestRepositoryIntegrated;
-    @Autowired
-    UserRepository userRepositoryIntegrated;
-    @Autowired
-    ItemRepository itemRepositoryIntegrated;
 
     static UserDto requesterDto;
     static User requesterUser;
@@ -157,36 +147,4 @@ class ItemRequestServiceImplTest {
         assertEquals(requestDtoOutput, result.get(0));
     }
 
-    /*@Test
-    public void findAllForRequesterIntegrated() {
-        userRepositoryIntegrated.save(requesterUser);
-        itemRequestRepositoryIntegrated.save(requestModel);
-
-        List<ItemRequestDtoOutput> check = itemRequestServiceIntegration.findAllForRequester(
-                requesterUser.getId(), 0, 1);
-        assertEquals(check.get(0).getId(), requestDtoOutput.getId());
-        assertEquals(check.get(0).getDescription(), requestDtoOutput.getDescription());
-    }
-
-    @Test
-    public void findAllFromOthersIntegrated() {
-        userRepositoryIntegrated.save(requesterUser);
-        itemRequestRepositoryIntegrated.save(requestModel);
-
-        List<ItemRequestDtoOutput> check = itemRequestServiceIntegration.findAllFromOthers(
-                ownerDto.getId(), 0, 1);
-        assertEquals(check.get(0).getId(), requestDtoOutput.getId());
-        assertEquals(check.get(0).getDescription(), requestDtoOutput.getDescription());
-    }
-
-    @Test
-    public void findByIdIntegrated() {
-        userRepositoryIntegrated.save(requesterUser);
-        itemRequestRepositoryIntegrated.save(requestModel);
-
-        ItemRequestDtoOutput check = itemRequestServiceIntegration.findById(requesterUser.getId(),
-                requestModel.getId());
-        assertEquals(check.getId(), requestDtoOutput.getId());
-        assertEquals(check.getDescription(), requestDtoOutput.getDescription());
-    }*/
 }

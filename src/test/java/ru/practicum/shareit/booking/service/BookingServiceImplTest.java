@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
@@ -39,26 +38,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@SpringBootTest
 class BookingServiceImplTest {
-
     @InjectMocks
     BookingServiceImpl bookingService;
-    @Autowired
-    BookingService bookingServiceIntegration;
     @Mock
     BookingRepository bookingRepository;
     @Mock
     UserRepository userRepository;
     @Mock
     ItemRepository itemRepository;
-    @Autowired
-    BookingRepository bookingRepositoryIntegration;
-    @Autowired
-    UserRepository userRepositoryIntegration;
-    @Autowired
-    ItemRepository itemRepositoryIntegration;
-
 
     final LocalDateTime start = LocalDateTime.of(3033, Month.JANUARY, 9, 17, 10, 11);
     final LocalDateTime end = LocalDateTime.of(3033, Month.JANUARY, 9, 17, 40, 11);
@@ -395,43 +383,4 @@ class BookingServiceImplTest {
         List<BookingDtoOutput> output = bookingService.findAllByOwner(owner.getId(), "REJECTED", 0, 3);
         assertEquals(output.size(), 3);
     }
-
-    /*@Test
-    public void findByIdIntegrated() {
-        userRepositoryIntegration.save(userOwner);
-        userRepositoryIntegration.save(userBooker);
-        itemRepositoryIntegration.save(item);
-        bookingRepositoryIntegration.save(booking);
-
-        BookingDtoOutput check = bookingServiceIntegration.findById(booking.getId(), booker.getId());
-        assertEquals(check.getId(), bookingDtoOutput.getId());
-        assertEquals(check.getBooker(), bookingDtoOutput.getBooker());
-        assertEquals(check.getItem(), bookingDtoOutput.getItem());
-    }
-
-    @Test
-    public void findAllIntegrated() {
-        userRepositoryIntegration.save(userOwner);
-        userRepositoryIntegration.save(userBooker);
-        itemRepositoryIntegration.save(item);
-        bookingRepositoryIntegration.save(booking);
-
-        List<BookingDtoOutput> check = bookingServiceIntegration.findAll(booker.getId(), "ALL", 0, 1);
-        assertEquals(check.get(0).getId(), bookingDtoOutput.getId());
-        assertEquals(check.get(0).getBooker(), bookingDtoOutput.getBooker());
-        assertEquals(check.get(0).getItem(), bookingDtoOutput.getItem());
-    }
-
-    @Test
-    public void findAllByOwnerIntegrated() {
-        userRepositoryIntegration.save(userOwner);
-        userRepositoryIntegration.save(userBooker);
-        itemRepositoryIntegration.save(item);
-        bookingRepositoryIntegration.save(booking);
-
-        List<BookingDtoOutput> check = bookingServiceIntegration.findAllByOwner(owner.getId(), "ALL", 0, 1);
-        assertEquals(check.get(0).getId(), bookingDtoOutput.getId());
-        assertEquals(check.get(0).getBooker(), bookingDtoOutput.getBooker());
-        assertEquals(check.get(0).getItem(), bookingDtoOutput.getItem());
-    }*/
 }
