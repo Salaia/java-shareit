@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>gateway</module>
-        <module>shareit-server</module>
+        <module>server</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
