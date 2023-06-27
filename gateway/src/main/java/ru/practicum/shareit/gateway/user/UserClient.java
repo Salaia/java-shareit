@@ -15,7 +15,7 @@ public class UserClient extends BaseClient {
 
     private static final String API_PREFIX = "/users";
 
-    @Autowired // UserClient constructor
+    @Autowired
     public UserClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
@@ -23,7 +23,7 @@ public class UserClient extends BaseClient {
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
-    } // UserClient constructor
+    }
 
     public ResponseEntity<Object> create(UserDto userDto) {
         return post("", userDto);
