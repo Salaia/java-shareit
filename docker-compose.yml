@@ -28,7 +28,7 @@ services:
       - /var/lib/postgresql/data/
     container_name: db_postgres
     ports:
-      - "6541:5432"
+      - "6541:5434"
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=shareit
