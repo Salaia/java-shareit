@@ -7,8 +7,6 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -24,9 +22,6 @@ public class User {
     Long id;
 
     String name;
-
-    @NotNull
-    @Email
     String email;
 
 }

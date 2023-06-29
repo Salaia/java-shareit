@@ -27,7 +27,6 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
     ItemRequestRepository itemRequestRepository;
 
     @Override
-    public ItemDto create(@Valid ItemDto itemDto, Long ownerId) {
+    public ItemDto create(ItemDto itemDto, Long ownerId) {
         Optional<User> optionalOwner = userRepository.findById(ownerId);
         if (optionalOwner.isPresent()) {
             User owner = optionalOwner.get();

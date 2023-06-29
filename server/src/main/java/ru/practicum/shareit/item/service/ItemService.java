@@ -5,12 +5,11 @@ import ru.practicum.shareit.item.dto.CommentDtoOutput;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingsAndComments;
 
-import javax.validation.Valid;
 import java.util.List;
 
 public interface ItemService {
 
-    ItemDto create(@Valid ItemDto itemDto, Long ownerId);
+    ItemDto create(ItemDto itemDto, Long ownerId);
 
     ItemDto update(ItemDto itemDto, Long ownerId);
 

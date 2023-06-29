@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDtoInput;
 import ru.practicum.shareit.item.dto.CommentDtoOutput;
@@ -12,11 +11,9 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingsAndComments;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
-@Validated
 @Slf4j
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -27,13 +24,13 @@ public class ItemController {
 
     @PostMapping
     public ItemDto create(@RequestHeader(HEADER_SHARER) Long ownerId,
-                          @Validated(ItemDto.Create.class) @RequestBody ItemDto itemDto) {
+                          @RequestBody ItemDto itemDto) {
         log.debug("Request received: create item: " + itemDto + "\nfor user: " + ownerId);
         return itemService.create(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@Validated(ItemDto.Update.class) @RequestBody ItemDto itemDto,
+    public ItemDto update(@RequestBody ItemDto itemDto,
                           @PathVariable Long itemId,
                           @RequestHeader(HEADER_SHARER) Long ownerId) {
         itemDto.setId(itemId);
@@ -50,8 +47,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDtoWithBookingsAndComments> findAll(@RequestHeader(HEADER_SHARER) Long ownerId,
-                                                        @RequestParam(defaultValue = "0") Integer from,
-                                                        @RequestParam(defaultValue = "20") Integer size) {
+                                                        @RequestParam Integer from,
+                                                        @RequestParam Integer size) {
         log.debug("Request received: find all items for owner: " + ownerId + "\nwith parameters:" +
                 "\nfrom: " + from + ", size: " + size);
         return itemService.findAll(ownerId, from, size);
@@ -59,8 +56,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> search(String text,
-                                @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                @RequestParam(defaultValue = "20") @PositiveOrZero Integer size) {
+                                @RequestParam Integer from,
+                                @RequestParam Integer size) {
         log.debug("Request received: search for item by text: " + text + "\nwith parameters: " +
                 "\nfrom: " + from + ", size: " + size);
         return itemService.search(text, from, size);

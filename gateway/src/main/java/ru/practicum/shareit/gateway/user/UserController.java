@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> create(@Validated(UserDto.Create.class) @RequestBody UserDto userDto) {
-        log.debug("Request received: create user: " + userDto);
+        log.debug("Request received: create user: {}", userDto);
         return userClient.create(userDto);
     }
 
@@ -32,7 +32,7 @@ public class UserController {
     public ResponseEntity<Object> update(@Validated(UserDto.Update.class) @RequestBody UserDto userDto,
                                          @PathVariable("id") @Positive Long id) {
         userDto.setId(id);
-        log.debug("Request received: update user: id: " + id + ", " + userDto);
+        log.debug("Request received: update user: id: {}, {}", id, userDto);
         return userClient.update(userDto, id);
     }
 
@@ -44,13 +44,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> findUserById(@PathVariable("id") @Positive Long id) {
-        log.debug("Request received: find user by id: " + id);
+        log.debug("Request received: find user by id: {}", id);
         return userClient.findUserById(id);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> removeUser(@PathVariable @Positive Long id) {
-        log.debug("Request received: remove user by id: " + id);
+        log.debug("Request received: remove user by id: {}", id);
         return userClient.removeUser(id);
     }
 }

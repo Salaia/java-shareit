@@ -4,18 +4,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
-@Validated
 @Slf4j
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
@@ -27,7 +23,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDtoOutput create(@RequestHeader(HEADER_SHARER) Long bookerId,
-                                   @RequestBody @Valid BookingDtoInput bookingDto) {
+                                   @RequestBody BookingDtoInput bookingDto) {
         log.debug("Request received: create booking: " + bookingDto + "\nfor booker:" + bookerId);
         return bookingService.create(bookingDto, bookerId);
     }
@@ -51,8 +47,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDtoOutput> findAll(@RequestHeader(HEADER_SHARER) Long userId,
                                           @RequestParam(defaultValue = "ALL") String state,
-                                          @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                          @RequestParam(value = "size", defaultValue = "10") @PositiveOrZero Integer size) {
+                                          @RequestParam(value = "from") Integer from,
+                                          @RequestParam(value = "size") Integer size) {
         log.debug("Request received: find all bookings for booker: " + userId + "\nwith request parameters:" +
                 "\nfrom: " + from + ", size: " + size + ", state: " + state);
         return bookingService.findAll(userId, state, from, size);
@@ -61,8 +57,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDtoOutput> findAllByOwner(@RequestHeader(HEADER_SHARER) Long ownerId,
                                                  @RequestParam(defaultValue = "ALL") String state,
-                                                 @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                                 @RequestParam(value = "size", defaultValue = "10") @PositiveOrZero Integer size) {
+                                                 @RequestParam(value = "from") Integer from,
+                                                 @RequestParam(value = "size") Integer size) {
         log.debug("Request received: find all bookings for owner: " + ownerId +
                 "\nwith parameters:\nfrom: " + from + ", size: " + size + ", state: " + state);
         return bookingService.findAllByOwner(ownerId, state, from, size);

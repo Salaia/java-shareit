@@ -10,8 +10,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDtoInput;
 import ru.practicum.shareit.request.dto.ItemRequestDtoOutput;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -27,15 +25,14 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDtoOutput create(@RequestHeader(HEADER_SHARER) Long requesterId,
-                                       @Valid @RequestBody ItemRequestDtoInput inputDto) {
+                                       @RequestBody ItemRequestDtoInput inputDto) {
         log.debug("Request received: create item request: " + inputDto + "\nfrom requester: " + requesterId);
         return itemRequestService.create(requesterId, inputDto);
     }
 
     @GetMapping
     public List<ItemRequestDtoOutput> findAllForRequester(@RequestHeader(HEADER_SHARER) Long requesterId,
-                                                          @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                                          @RequestParam(value = "size", defaultValue = "10") @PositiveOrZero Integer size) {
+                                                          @RequestParam Integer from, @RequestParam Integer size) {
         log.debug("Request received: find all item requests for requester: " + requesterId +
                 "\nwith parameters: from: " + from + ", size: " + size);
         return itemRequestService.findAllForRequester(requesterId, from, size);
@@ -43,8 +40,7 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDtoOutput> findAllFromOthers(@RequestHeader(HEADER_SHARER) Long requesterId,
-                                                        @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                                        @RequestParam(value = "size", defaultValue = "10") @PositiveOrZero Integer size) {
+                                                        @RequestParam Integer from, @RequestParam Integer size) {
         log.debug("Request received: find all other users' item requests.\nRequester: " + requesterId +
                 "\nRequest parameters: from: " + from + ", size: " + size);
         return itemRequestService.findAllFromOthers(requesterId, from, size);
