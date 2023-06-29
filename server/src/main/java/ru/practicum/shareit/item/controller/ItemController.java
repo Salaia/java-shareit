@@ -47,8 +47,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDtoWithBookingsAndComments> findAll(@RequestHeader(HEADER_SHARER) Long ownerId,
-                                                        @RequestParam Integer from,
-                                                        @RequestParam Integer size) {
+                                                        @RequestParam(defaultValue = "0") Integer from,
+                                                        @RequestParam(defaultValue = "10") Integer size) {
         log.debug("Request received: find all items for owner: " + ownerId + "\nwith parameters:" +
                 "\nfrom: " + from + ", size: " + size);
         return itemService.findAll(ownerId, from, size);
@@ -56,8 +56,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> search(String text,
-                                @RequestParam Integer from,
-                                @RequestParam Integer size) {
+                                @RequestParam(defaultValue = "0") Integer from,
+                                @RequestParam(defaultValue = "10") Integer size) {
         log.debug("Request received: search for item by text: " + text + "\nwith parameters: " +
                 "\nfrom: " + from + ", size: " + size);
         return itemService.search(text, from, size);

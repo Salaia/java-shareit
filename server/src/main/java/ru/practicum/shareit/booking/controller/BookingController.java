@@ -47,8 +47,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDtoOutput> findAll(@RequestHeader(HEADER_SHARER) Long userId,
                                           @RequestParam(defaultValue = "ALL") String state,
-                                          @RequestParam(value = "from") Integer from,
-                                          @RequestParam(value = "size") Integer size) {
+                                          @RequestParam(defaultValue = "0") Integer from,
+                                          @RequestParam(defaultValue = "10") Integer size) {
         log.debug("Request received: find all bookings for booker: " + userId + "\nwith request parameters:" +
                 "\nfrom: " + from + ", size: " + size + ", state: " + state);
         return bookingService.findAll(userId, state, from, size);
@@ -57,8 +57,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDtoOutput> findAllByOwner(@RequestHeader(HEADER_SHARER) Long ownerId,
                                                  @RequestParam(defaultValue = "ALL") String state,
-                                                 @RequestParam(value = "from") Integer from,
-                                                 @RequestParam(value = "size") Integer size) {
+                                                 @RequestParam(defaultValue = "0") Integer from,
+                                                 @RequestParam(defaultValue = "10") Integer size) {
         log.debug("Request received: find all bookings for owner: " + ownerId +
                 "\nwith parameters:\nfrom: " + from + ", size: " + size + ", state: " + state);
         return bookingService.findAllByOwner(ownerId, state, from, size);

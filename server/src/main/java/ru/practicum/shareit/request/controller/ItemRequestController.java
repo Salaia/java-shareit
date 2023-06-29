@@ -40,7 +40,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDtoOutput> findAllFromOthers(@RequestHeader(HEADER_SHARER) Long requesterId,
-                                                        @RequestParam Integer from, @RequestParam Integer size) {
+                                                        @RequestParam(defaultValue = "0") Integer from,
+                                                        @RequestParam(defaultValue = "10") Integer size) {
         log.debug("Request received: find all other users' item requests.\nRequester: " + requesterId +
                 "\nRequest parameters: from: " + from + ", size: " + size);
         return itemRequestService.findAllFromOthers(requesterId, from, size);
